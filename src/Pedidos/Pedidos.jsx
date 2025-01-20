@@ -9,8 +9,8 @@ export default function PedidosPage() {
 
   //Aqui se que pedido esta cancelando asi que puedo tomar que elementos tiene para regresarlos a stock el problema es que cuando me salgo de la pagina y regreso, el stock se pierde
   const handleReturns = (index,subIndex) => {
-    alert("Regresa "+(index+1) +"sub"+(subIndex+1));
-    setCountDressBlue(countDressBlue+1);
+    //alert("Regresa "+(index+1) +"sub"+(subIndex+1));
+    alert("Por el momento no esta disponible");
   }
 
   return (
