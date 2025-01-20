@@ -13,23 +13,23 @@ export default function PantsPage() {
     ]
 
     return (
-        <div class="details">
-    <h1 class="details__title">Detalles del Producto</h1>
+        <div className="details">
+    <h1 className="details__title">Detalles del Producto</h1>
     {allPantses.map((pants) => (
         (pants.prodCode === prodCodeLocal) ? (
-            <div class="details__product" key={pants.prodCode}>
-                <div class="details__product__image">
-                    <img src={pants.imagePath} alt="Imagen" class="details__product__img" />
+            <div className="details__product" key={pants.prodCode}>
+                <div className="details__product__image">
+                    <img src={pants.imagePath} alt="Imagen" className="details__product__img" />
                 </div>
-                <div class="details__product__info">
-                    <h3 class="details__product__name">Producto: {pants.prodName}</h3>
-                    <h3 class="details__product__description">Descripción: {pants.description}</h3>
-                    <h3 class="details__product__size">Talla: {pants.size}</h3>
-                    <h3 class="details__product__price">Precio: ${pants.price}</h3>
-                    <h3 class="details__product__brand">Marca: {pants.brand}</h3>
-                    <h3 class="details__product__stock">Disponibles: {prodStockLocal}</h3>
+                <div className="details__product__info">
+                    <h3 className="details__product__name">Producto: {pants.prodName}</h3>
+                    <h3 className="details__product__description">Descripción: {pants.description}</h3>
+                    <h3 className="details__product__size">Talla: {pants.size}</h3>
+                    <h3 className="details__product__price">Precio: ${pants.price}</h3>
+                    <h3 className="details__product__brand">Marca: {pants.brand}</h3>
+                    <h3 className="details__product__stock">Disponibles: {prodStockLocal}</h3>
                 </div>
-                <Link to="/" class="details__back-link">Volver</Link>
+                <Link to="/" className="details__back-link">Volver</Link>
             </div>
         ) : (
             <h1></h1>

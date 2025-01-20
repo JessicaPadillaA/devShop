@@ -27,18 +27,18 @@ export default function LoginPage() {
     };
 
     return (
-        <div class="login">
-            <h1 class="login__title"> Iniciar sesión</h1>
-            <form onSubmit={handleLogin} class="login__form">
-                <div class="login__form-group">
-                    <label class="login__label">Usuario: </label>
-                    <input type="text" value={name} class="login__user" onChange={(e) => setName(e.target.value)} required />
+        <div className="login">
+            <h1 className="login__title"> Iniciar sesión</h1>
+            <form onSubmit={handleLogin} className="login__form">
+                <div className="login__form-group">
+                    <label className="login__label">Usuario: </label>
+                    <input type="text" value={name} className="login__user" onChange={(e) => setName(e.target.value)} required />
                 </div>
-                <div class="login__form-group">
-                    <label class="login__label">Contraseña: </label>
-                    <input type="password" value={password} class="login__pass" onChange={(e) => setPassword(e.target.value)} required></input>
+                <div className="login__form-group">
+                    <label className="login__label">Contraseña: </label>
+                    <input type="password" value={password} className="login__pass" onChange={(e) => setPassword(e.target.value)} required></input>
                 </div>
-                <button type="submit" class="login__button">Login</button>
+                <button type="submit" className="login__button">Login</button>
             </form>
         </div>
     )

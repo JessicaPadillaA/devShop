@@ -13,24 +13,24 @@ export default function SkirtPage() {
     ]
 
     return (
-        <div class="details">
-        <h1 class="details__title">Detalles del Producto</h1>
+        <div className="details">
+        <h1 className="details__title">Detalles del Producto</h1>
         {allSkirtes.map((skirt) => (
             (skirt.prodCode === prodCodeLocal) ? (
-                <div class="details__product" key={skirt.prodCode}>
-                    <div class="details__product__image">
-                        <img src={skirt.imagePath} alt="Imagen" class="product-details__image" />
+                <div className="details__product" key={skirt.prodCode}>
+                    <div className="details__product__image">
+                        <img src={skirt.imagePath} alt="Imagen" className="product-details__image" />
                     </div>
     
-                    <div class="details__product__info">
-                        <h3 class="details__product__name">Producto: {skirt.prodName}</h3>
-                        <h3 class="details__product__description">Descripción: {skirt.description}</h3>
-                        <h3 class="details__product__size">Talla: {skirt.size}</h3>
-                        <h3 class="details__product__price">Precio: ${skirt.price}</h3>
-                        <h3 class="details__product__brand">Marca: {skirt.brand}</h3>
-                        <h3 class="details__product__stock">Disponibles: {prodStockLocal}</h3>
+                    <div className="details__product__info">
+                        <h3 className="details__product__name">Producto: {skirt.prodName}</h3>
+                        <h3 className="details__product__description">Descripción: {skirt.description}</h3>
+                        <h3 className="details__product__size">Talla: {skirt.size}</h3>
+                        <h3 className="details__product__price">Precio: ${skirt.price}</h3>
+                        <h3 className="details__product__brand">Marca: {skirt.brand}</h3>
+                        <h3 className="details__product__stock">Disponibles: {prodStockLocal}</h3>
                     </div>
-                    <Link to="/" class="details__back-link">Volver</Link>
+                    <Link to="/" className="details__back-link">Volver</Link>
                 </div>
             ) : (
                 <h1></h1>
