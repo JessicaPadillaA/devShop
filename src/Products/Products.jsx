@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../Common/UserContext";
 
-
 const deparments = [
     { depCode: "1", depName: "Dress", depPath: "/dress" },
     { depCode: "2", depName: "Shirts", depPath: "/shirt" },
@@ -26,6 +25,30 @@ export default function ProductsPage() {
     const { userCounterCart, setUserCounterCart } = useUser(0);
     const { userCart, setUserCart } = useUser();
 
+    const [elasticList, setElasticList] = useState([]);
+
+    const headers = new Headers({
+        'Authorization': `Basic ${btoa('uuk329tnep' + ':' + '56t7t7p4x5')}`,
+        'Content-type' :'application/json'
+    });
+
+    useEffect(() => {
+             fetch('https://cenace-search-79914116.us-east-1.bonsaisearch.net/productos/_search?filter_path=hits.hits._source',{headers: headers})
+                 .then((response) => response.json())
+                 .then((data) =>setElasticList(data));
+
+             }, []);
+
+       // console.log('ORIGINAL RESULT--->', elasticList)
+        const resultArray = Object.keys(elasticList).map((key) => elasticList[key]);
+        //console.log('ARRAY RESULT--->', resultArray[0])
+        var finalArray=[]
+        resultArray.forEach(function(n){
+            finalArray=n.hits;
+
+        });
+        //console.log('final array',finalArray)
+
     const useCountCart = () => {
 
 
@@ -45,117 +68,165 @@ export default function ProductsPage() {
         return { addProductCart };
     };
 
-    const [selectedDep, setSelectedDep] = useState("All");
+    const [selectedDep, setSelectedDep] = useState();
     const [selectedProducts, setSelectedProducts] = useState(allProducts); // Estado para los productos mostrados
     const [products, setProducts] = useState(allProducts); // Estado para los productos con stock actualizado
     const {userIsReg}=useUser();
     const { addProductCart } = useCountCart();
     const navigate = useNavigate();
 
+    // useEffect(() => {
+    //     if (selectedDep === "All") {
+    //         setSelectedProducts(allProducts);
+    //     } else {
+    //
+    //         const filteredProd = finalArray.filter((product) => product._source.depCode === selectedDep);
+    //         //console.log('filtros----->',filteredProd);
+    //         //setElasticList(filteredProd);
+    //     }
+    // }, [setElasticList]);
+
+    // const handleAddToCart = (product) => {
+    //     if (product.stock > 0) {
+    //         addProductCart([product.prodCode, product.prodName, product.price, 1, product.stock - 1]); // Decrementamos el stock
+    //         setProducts((prevProducts) =>
+    //             prevProducts.map((prod) =>
+    //                 prod.prodCode === product.prodCode
+    //                     ? { ...prod, stock: prod.stock - 1 } // Actualizamos el stock en el estado global
+    //                     : prod
+    //             )
+    //         );
+    //
+    //         // También actualizamos el estado de selectedProducts para reflejar el stock actualizado
+    //         setSelectedProducts((prevSelectedProducts) =>
+    //             prevSelectedProducts.map((prod) =>
+    //                 prod.prodCode === product.prodCode
+    //                     ? { ...prod, stock: prod.stock - 1 } // Decrementamos el stock del producto mostrado
+    //                     : prod
+    //             )
+    //         );
+    //     }
+    // };
+
     const handleChange = (e) => {
-        setSelectedDep(e.target.value);
-    };
+        console.log('chageeee', e.target.value)
+        if(e.target.value !== 'All'){
 
-    useEffect(()=>{
-        if(!userIsReg){
-           const userWantLogin= window.confirm("Desea iniciar sesión");
-           userWantLogin? navigate("/login"):null;
-        }
-    },[])
-
-    useEffect(() => {
-        if (selectedDep === "All") {
-            setSelectedProducts(allProducts);
-        } else {
-            const filteredProd = allProducts.filter((product) => product.depCode === selectedDep);
-            setSelectedProducts(filteredProd);
-        }
-    }, [selectedDep]);
-
-    // Función para agregar el producto al carrito y actualizar el stock
-    const handleAddToCart = (product) => {
-        if (product.stock > 0) {
-            addProductCart([product.prodCode, product.prodName, product.price, 1, product.stock - 1]); // Decrementamos el stock
-            setProducts((prevProducts) =>
-                prevProducts.map((prod) =>
-                    prod.prodCode === product.prodCode
-                        ? { ...prod, stock: prod.stock - 1 } // Actualizamos el stock en el estado global
-                        : prod
-                )
-            );
-
-            // También actualizamos el estado de selectedProducts para reflejar el stock actualizado
-            setSelectedProducts((prevSelectedProducts) =>
-                prevSelectedProducts.map((prod) =>
-                    prod.prodCode === product.prodCode
-                        ? { ...prod, stock: prod.stock - 1 } // Decrementamos el stock del producto mostrado
-                        : prod
-                )
-            );
+        fetch('https://cenace-search-79914116.us-east-1.bonsaisearch.net/productos/_search',
+            {
+                method: "POST",
+                headers: headers,
+                accept: "application/json",
+                body: JSON.stringify({
+                    "query":{
+                        "match":{
+                            "depCode":e.target.value
+                        }
+                    }
+                })
+            })
+            .then((response) => response.json())
+            .then((data) =>setElasticList(data));
+        }else{
+            fetch('https://cenace-search-79914116.us-east-1.bonsaisearch.net/productos/_search?filter_path=hits.hits._source',{headers: headers})
+                .then((response) => response.json())
+                .then((data) =>setElasticList(data));
         }
     };
+        const handleBuscar=(event)=>{
+            if(event.target.value.length != 0){
+                fetch('https://cenace-search-79914116.us-east-1.bonsaisearch.net/productos/_search',
+                    {
+                        method: "POST",
+                        headers: headers,
+                        accept: "application/json",
+                        body: JSON.stringify({
+                            "query":{
+                                "multi_match":{
+                                    "query":event.target.value,
+                                    "type":"bool_prefix",
+                                    "fields":[
+                                        "description",
+                                        "description._2gram",
+                                        "description._3gram"
+                                    ]
+                                }
+                            }
+                        })
+                    })
+                    .then((response) => response.json())
+                    .then((data) =>setElasticList(data));
 
-        const handleBuscar=()=>{
-            alert("Por el momento no esta disponible");
+            }else{
+
+                fetch('https://cenace-search-79914116.us-east-1.bonsaisearch.net/productos/_search?filter_path=hits.hits._source',{headers: headers})
+                    .then((response) => response.json())
+                    .then((data) =>setElasticList(data));
+            }
+
         }
 
-    return (
-        <div className="products">
-            <div className="products__header">
-    <span className="products__header__label">Categoria:</span>
-    <select value={selectedDep} onChange={handleChange} className="products__header__select">
-        <option value="" disabled className="products__header__select-option">
-            Selecciona una categoria
-        </option>
-        {deparments.map((department) => (
-            <option
-                key={department.depCode} value={department.depCode} className="products__header__select-option">
-                {department.depName}
-            </option>
-        ))}
-        <option value="All" className="products__header__select-option">
-            All
-        </option>
-    </select>
-    <div className="products__header__searchBar">  
-        <input className="products__header__searchBar-input"/>
-        <button className="products__header__searchBar-button" onClick={handleBuscar}>Buscar</button>
-    </div>
+    //Si no hay producto emitimos un mensaje
+    if (elasticList.length === 0) {
+        return <>
+            <h1>Cargando productos ...</h1>
+        </>
+    }
+        return (
+            <div className="products">
+                <div className="products__header">
+                    <span className="products__header__label">Categoria:</span>
+                    <select value={selectedDep} onChange={handleChange} className="products__header__select">
+                        <option value="" disabled className="products__header__select-option" selected>
+                            Selecciona una categoria
+                        </option>
+                        {deparments.map((department) => (
+                            <option
+                                key={department.depCode} value={department.depCode} className="products__header__select-option">
+                                {department.depName}
+                            </option>
+                        ))}
+                        <option value="All" className="products__header__select-option">
+                            All
+                        </option>
+                    </select>
+                    <div className="products__header__searchBar">
+                        <input className="products__header__searchBar-input" placeholder="Ingresa tu Busqueda" onChange={handleBuscar}/>
+                    </div>
+                </div>
 
-    
-</div>
+                <div className="products">
+                    <h2 className="products__title">Productos</h2>
+                    <div className="products__content__dynamic">
 
-<div className="products">
-  <h2 className="products__title">Productos</h2>
-  <div className="products__content__dynamic">
-    {selectedProducts.map((product) => (
-      <div className="products__content__dynamic__item" key={product.prodCode}>
-        <Link 
-          to={product.depPath} 
-          state={[product.prodCode, product.stock]} 
-          className="products__content__dynamic__item__link"
-        >
-          <div className="products__content__dynamic__item__image-container">
-            <img src={product.imagePath} alt={product.prodName} className="products__content__dynamic__item__image" />
-          </div>
-          <div className="products__content__dynamic__item__details">
-            <h4 className="products__content__dynamic__item__name">{product.prodName}</h4>
-            <p className="products__content__dynamic__item__price">${product.price}</p>
-            <p className="products__content__dynamic__item__stock">Disponibles: {product.stock}</p>
-          </div>
-        </Link>
-        <button 
-          className="products__content__dynamic__item__add-to-cart" 
-          onClick={() => handleAddToCart(product)}
-        >
-          Agregar al carrito
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
+                        {finalArray.map((elasticProducts) => (
+                            <div className="products__content__dynamic__item" key={elasticProducts._source.prodCode}>
+                                <Link
+                                    to={elasticProducts._source.depPath}
+                                    state={[elasticProducts._source.prodCode, elasticProducts._source.stock]}
+                                    className="products__content__dynamic__item__link"
+                                >
+                                    <div className="products__content__dynamic__item__image-container">
+                                        <img src={elasticProducts._source.imagePath} alt={elasticProducts._source.prodName} className="products__content__dynamic__item__image" />
+                                    </div>
+                                    <div className="products__content__dynamic__item__details">
+                                        <h4 className="products__content__dynamic__item__name">{elasticProducts._source.prodName}</h4>
+                                        <p className="products__content__dynamic__item__price">${elasticProducts._source.price}</p>
+                                        {/*<p className="products__content__dynamic__item__stock">Disponibles: {elasticProducts._source.stock}</p>*/}
+                                    </div>
+                                </Link>
+                                <button
+                                    className="products__content__dynamic__item__add-to-cart"
+                                    onClick={() => handleAddToCart(elasticProducts)}
+                                >
+                                    Agregar al carrito
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
 
 
-        </div>
-    );
 }
