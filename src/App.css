@@ -103,15 +103,33 @@
   cursor: pointer;
 }
 
-.products__header__searchBar{
-  
+.products__header__searchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre elementos */
   padding: 10px;
   margin-top: 10px;
   margin-left: 20%;
   font-size: 14px;
-  border: 2px solid red;
   border-radius: 4px;
   background-color: #fff;
+}
+
+.products__header__searchBar-input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 250px; /* Ajusta el ancho de la barra de búsqueda */
+}
+
+.dropdown {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .products {

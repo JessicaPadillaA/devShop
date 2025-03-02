@@ -192,6 +192,12 @@ export default function ProductsPage() {
                     </select>
                     <div className="products__header__searchBar">
                         <input className="products__header__searchBar-input" placeholder="Ingresa tu Busqueda" onChange={handleBuscar}/>
+                        <select id="filter" className="dropdown" defaultValue="">
+                        <option value="" disabled hidden>Filtrar por</option>
+                        <option value="descripcion">Descripción</option>
+                        <option value="tipo">Tipo</option>
+                        <option value="precio">Precio</option>
+                        </select>
                     </div>
                 </div>
 
